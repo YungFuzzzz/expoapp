@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import ClothingItem from './components/clothingItems';
+import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import ClothingItem from './components/ClothingItem';
+import ClothingDetails from './components/ClothingDetails';
 
 const clothingData = [
   { id: '1', name: 'Vetements Sweater', size: 'L', price: 1250, image: require('./assets/clothinitems/vetementssweater.png') },
@@ -12,29 +13,42 @@ const clothingData = [
   { id: '7', name: 'AMBUSH glasses', size: 'OS', price: 200, image: require('./assets/clothinitems/ambushglasses.png') },
 ];
 
-const ClothingApp = () => {
-  const renderClothingItem = ({ item }) => (
-    <ClothingItem item={item} onPress={handleItemPress} />
-  );
+const App = () => {
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const handleItemPress = (item) => {
-    console.log('Geselecteerd kledingstuk:', item);
+    setSelectedItem(item);
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Clothing Store</Text>
-      </View>
-      <FlatList
-        data={clothingData}
-        keyExtractor={(item) => item.id}
-        renderItem={renderClothingItem}
-        numColumns={2}
-        contentContainerStyle={styles.listContainer}
-      />
-    </View>
+  const renderContent = () => {
+    if (selectedItem) {
+      return <ClothingDetails item={selectedItem} onBackPress={() => setSelectedItem(null)} />;
+    } else {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Kledingwinkel</Text>
+          <FlatList
+            data={clothingData}
+            keyExtractor={(item) => item.id}
+            renderItem={renderClothingItem}
+            numColumns={2}
+            contentContainerStyle={styles.listContainer}
+          />
+        </View>
+      );
+    }
+  };
+
+  const renderClothingItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => handleItemPress(item)}
+    >
+      <ClothingItem item={item} onPress={handleItemPress} />
+    </TouchableOpacity>
   );
+
+  return renderContent();
 };
 
 const styles = StyleSheet.create({
@@ -43,19 +57,20 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f0f0f0',
   },
-  titleContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
+    marginTop: 48,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  itemContainer: {
+    flex: 1,
+    marginBottom: 16,
   },
   listContainer: {
     justifyContent: 'space-between',
   },
 });
 
-export default ClothingApp;
+export default App;

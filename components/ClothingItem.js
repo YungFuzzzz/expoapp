@@ -8,7 +8,7 @@ const ClothingItem = ({ item, onPress }) => {
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Text style={styles.itemSize}>Maat: {item.size}</Text>
-        <Text style={styles.itemPrice}>Prijs: €{item.price}</Text>
+        <Text style={styles.itemPrice}>Prijs: ${item.price}</Text>
       </View>
     </TouchableOpacity>
   );
